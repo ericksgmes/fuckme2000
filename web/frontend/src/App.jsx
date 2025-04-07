@@ -9,7 +9,7 @@ function App() {
   const [output, setOutput] = useState("");
 
   const runCode = async () => {
-    const response = await fetch("http://localhost:3001/run", {
+    const response = await fetch("https://fuckme2000-1.onrender.com/run", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code }),

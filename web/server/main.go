@@ -17,11 +17,11 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*", // or set to "http://localhost:5173"
+		AllowOrigins: "*",
 		AllowMethods: "GET,POST,OPTIONS",
-	  }))
+		AllowHeaders: "*",
+	  }))	  
 	  
-
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("hello from hell")
 	})
