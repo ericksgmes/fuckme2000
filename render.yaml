@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: fuckme2000-backend
+    env: docker
+    plan: free
+    dockerfilePath: web/server/Dockerfile
+    buildCommand: ""
+    startCommand: "/goapi"
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 3001
+    ports:
+      - 3001
+
+  - type: web
+    name: fuckme2000-frontend
+    env: docker
+    plan: free
+    dockerfilePath: web/frontend/Dockerfile
+    buildCommand: ""
+    startCommand: "nginx -g 'daemon off;'"
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 80
+    ports:
+      - 80
