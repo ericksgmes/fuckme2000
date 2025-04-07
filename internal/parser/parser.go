@@ -34,11 +34,19 @@ func (p *Parser) ParseLet() []vm.Instruction {
 	ident := p.current.Literal
 
 	p.advance() // ASSIGN
-	p.advance() // INT
+
+	p.advance() // INT or IDENT
 	value := p.current.Literal
 
-	p.advance() // SEMICOLON 
-	
+	// Now advance to what should be the SEMICOLON
+	p.advance()
+
+	if p.current.Type != lexer.SEMICOLON {
+		panic("Expected ';' after let statement")
+	}
+
+	p.advance() // Move past the semicolon
+
 	return []vm.Instruction{
 		{Op: "PUSH", Arg: value},
 		{Op: "STORE", Arg: ident},
@@ -49,38 +57,59 @@ func (p *Parser) ParsePrint() []vm.Instruction {
 	var r []vm.Instruction
 
 	p.advance() // LPAREN
-	p.advance() // IDENT or INT
 
+	// Capture left side
+	p.advance() // IDENT or INT
 	left := p.current.Literal
 	if p.current.Type == lexer.INT {
 		r = append(r, vm.Instruction{Op: "PUSH", Arg: left})
-	} else {
+	} else if p.current.Type == lexer.IDENT {
 		r = append(r, vm.Instruction{Op: "LOAD", Arg: left})
+	} else {
+		panic("expected value inside print()")
 	}
 
-	p.advance() // PLUS or RPAREN
+	p.advance() // Either PLUS or RPAREN
 
 	if p.current.Type == lexer.PLUS {
-		p.advance() // IDENT or INT
+		// Handle addition
+		p.advance() // right operand
 		right := p.current.Literal
 
-		if p.current.Type == lexer.IDENT {
+		if p.current.Type == lexer.INT {
+			r = append(r, vm.Instruction{Op: "PUSH", Arg: right})
+		} else if p.current.Type == lexer.IDENT {
 			r = append(r, vm.Instruction{Op: "LOAD", Arg: right})
 		} else {
-			r = append(r, vm.Instruction{Op: "PUSH", Arg: right})
+			panic("expected number or variable after '+'")
 		}
 
 		r = append(r, vm.Instruction{Op: "ADD"})
-		p.advance() // RPAREN
-		p.advance() // SEMICOLON
 
+		p.advance() // RPAREN
+		if p.current.Type != lexer.RPAREN {
+			panic("expected ')' after print expression")
+		}
+
+		p.advance() // SEMICOLON
+		if p.current.Type != lexer.SEMICOLON {
+			panic("expected ';' after print()")
+		}
+
+		p.advance() // Move past SEMICOLON
 		r = append(r, vm.Instruction{Op: "PRINT"})
 		return r
 	}
 
-	// No addition
-	p.advance() // RPAREN
+	// If there's no PLUS (just print(x) or print(5))
+	if p.current.Type != lexer.RPAREN {
+		panic("expected ')' after value in print()")
+	}
 	p.advance() // SEMICOLON
+	if p.current.Type != lexer.SEMICOLON {
+		panic("expected ';' after print()")
+	}
+	p.advance() // Move past SEMICOLON
 
 	r = append(r, vm.Instruction{Op: "PRINT"})
 	return r
