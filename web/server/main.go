@@ -5,6 +5,8 @@ import (
 	"fuckme2000/internal/lexer"
 	"fuckme2000/internal/parser"
 	"fuckme2000/internal/vm"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+
 )
 
 type RunRequest struct {
@@ -13,6 +15,8 @@ type RunRequest struct {
 
 func main() {
 	app := fiber.New()
+
+	app.Use(cors.New())
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("hello from hell")
