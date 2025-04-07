@@ -35,22 +35,46 @@ func (p *Parser) ParseLet() []vm.Instruction {
 
 	p.advance() // ASSIGN
 
-	p.advance() // INT or IDENT
-	value := p.current.Literal
+	var instrs []vm.Instruction
 
-	// Now advance to what should be the SEMICOLON
-	p.advance()
+	p.advance() // First value (IDENT or INT)
+	left := p.current.Literal
+
+	if p.current.Type == lexer.INT {
+		instrs = append(instrs, vm.Instruction{Op: "PUSH", Arg: left})
+	} else if p.current.Type == lexer.IDENT {
+		instrs = append(instrs, vm.Instruction{Op: "LOAD", Arg: left})
+	} else {
+		panic("Expected value after '='")
+	}
+
+	p.advance() // PLUS or SEMICOLON
+
+	if p.current.Type == lexer.PLUS {
+		p.advance() // right operand
+		right := p.current.Literal
+
+		if p.current.Type == lexer.INT {
+			instrs = append(instrs, vm.Instruction{Op: "PUSH", Arg: right})
+		} else if p.current.Type == lexer.IDENT {
+			instrs = append(instrs, vm.Instruction{Op: "LOAD", Arg: right})
+		} else {
+			panic("Expected value after '+'")
+		}
+
+		instrs = append(instrs, vm.Instruction{Op: "ADD"})
+		p.advance() // SEMICOLON
+	}
 
 	if p.current.Type != lexer.SEMICOLON {
 		panic("Expected ';' after let statement")
 	}
 
-	p.advance() // Move past the semicolon
+	p.advance() // move past ;
 
-	return []vm.Instruction{
-		{Op: "PUSH", Arg: value},
-		{Op: "STORE", Arg: ident},
-	}
+	instrs = append(instrs, vm.Instruction{Op: "STORE", Arg: ident})
+
+	return instrs
 }
 
 func (p *Parser) ParsePrint() []vm.Instruction {
