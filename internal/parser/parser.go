@@ -42,3 +42,35 @@ func (p *Parser) ParseLet() []string {
 		fmt.Sprintf("STORE %s", ident),
 	}
 }
+
+func (p *Parser) ParsePrint() []string {
+	p.advance()
+	p.advance()
+	left := p.current.Literal
+	p.advance()
+	if p.current.Type == lexer.PLUS {
+		p.advance()
+		if p.current.Type == lexer.IDENT {
+			right := p.current.Literal
+			return []string {
+				fmt.Sprintf("LOAD %s", left),
+				fmt.Sprintf("LOAD %s", right),
+				"ADD", 
+				"PRINT",
+			}
+		} else {
+			right := p.current.Literal
+			return []string {
+				fmt.Sprintf("LOAD %s", left),
+				fmt.Sprintf("PUSH %s", right),
+				"ADD", 
+				"PRINT",
+			}
+		}
+	} else {
+		return []string {
+			fmt.Sprintf("LOAD %s", left),
+			"PRINT",
+		}
+	}
+}
