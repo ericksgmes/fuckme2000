@@ -50,10 +50,8 @@ func (vm *VM) Run(program []Instruction) {
             vm.Stack = append(vm.Stack, a+b)
 
         case "PRINT":
-            if len(vm.Stack) == 0 {
-                panic("PRINT with empty stack")
-            }
-            fmt.Println(vm.pop())
+            val := vm.pop()
+            printlnVal(fmt.Sprintf("%d", val))        
 
         default:
             panic("Unknown instruction: " + instr.Op)
@@ -69,3 +67,5 @@ func (vm *VM) pop() int {
     vm.Stack = vm.Stack[:len(vm.Stack)-1]
     return val
 }
+
+
