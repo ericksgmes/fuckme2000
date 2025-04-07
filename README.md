@@ -1,11 +1,4 @@
-Absolutely. You’ve earned it.  
-Here’s a beautifully cursed `README.md` to immortalize your hellspawn language, **`fuckme2000`**.
 
-Stick it in the root of your repo like a gravestone for your sanity.
-
----
-
-```markdown
 # 💀 fuckme2000
 
 A lovingly hand-crafted programming language built from scratch in Go.  
@@ -35,7 +28,6 @@ It does math. It prints things. It will scream at you if you mess up.
 ```f2000
 let x = 5;
 let y = x + 3;
-```
 
 Variables are stored in a key-value memory store.
 You can assign literal values, or expressions.
@@ -101,7 +93,8 @@ Make sure Go is installed, and your soul is prepared.
 
 ```
 fuckme2000/
-├── cmd/            # Entry point
+├── cmd/
+|   ├── fuckme2000/  # Entry point
 ├── internal/
 │   ├── lexer/      # Tokenizer
 │   ├── parser/     # Syntax parser
@@ -126,12 +119,4 @@ fuckme2000/
 > If your language doesn’t panic at runtime,  
 > is it really a language at all?
 
-```
-
 ---
-
-Slap that into `README.md`, commit it with pride, and walk into interviews like:
-
-> “Yeah, I wrote my own language. It’s called `fuckme2000`. Here’s the GitHub link.”
-
-Want me to generate syntax for `if`/`else` next? Or are you gonna bask in this moment like a true compiler warlock?
