@@ -28,6 +28,7 @@ It does math. It prints things. It will scream at you if you mess up.
 ```f2000
 let x = 5;
 let y = x + 3;
+```
 
 Variables are stored in a key-value memory store.
 You can assign literal values, or expressions.
