@@ -44,33 +44,56 @@ func (p *Parser) ParseLet() []string {
 }
 
 func (p *Parser) ParsePrint() []string {
+	var r []string
 	p.advance()
 	p.advance()
 	left := p.current.Literal
+	if p.current.Type == lexer.INT {
+		r = append(r, fmt.Sprintf("PUSH %s", left))
+	} else {
+		r = append(r, fmt.Sprintf("LOAD %s", left))
+	}
 	p.advance()
 	if p.current.Type == lexer.PLUS {
 		p.advance()
 		if p.current.Type == lexer.IDENT {
 			right := p.current.Literal
-			return []string {
-				fmt.Sprintf("LOAD %s", left),
+			r = append(
+				r, 
 				fmt.Sprintf("LOAD %s", right),
 				"ADD", 
 				"PRINT",
-			}
+			)
+			return r
 		} else {
 			right := p.current.Literal
-			return []string {
-				fmt.Sprintf("LOAD %s", left),
+			r = append(
+				r, 
 				fmt.Sprintf("PUSH %s", right),
 				"ADD", 
 				"PRINT",
-			}
+			)
+			return r
 		}
 	} else {
-		return []string {
-			fmt.Sprintf("LOAD %s", left),
-			"PRINT",
-		}
+		r = append(r, "PRINT")
+		return r
 	}
+}
+
+func (p *Parser) ParseProgram() []string {
+    var instructions []string
+
+    for p.current.Type != lexer.EOF {
+        switch p.current.Type {
+        case lexer.LET:
+            instructions = append(instructions, p.ParseLet()...)
+        case lexer.PRINT:
+            instructions = append(instructions, p.ParsePrint()...)
+        default:
+            panic("unexpected token: " + p.current.Type)
+        }
+    }
+
+    return instructions
 }
