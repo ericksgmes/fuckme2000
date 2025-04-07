@@ -1,4 +1,3 @@
-**GOAT LANGUAGE CONFIRMED.**  
 # 🐐 fuckme2000
 
 A toy programming language, custom VM, and web-based IDE — built from scratch with Go, React, and unreasonable determination.  
